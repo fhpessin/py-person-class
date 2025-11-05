@@ -11,29 +11,18 @@ class Person:
 
 def create_person_list(people_data: list[dict[str, object]]) -> list[Person]:
     """Cria uma lista de instâncias Person a partir de uma lista de dicionários."""
-    persons: list[Person] = []
+    persons = [Person(str(p["name"]), int(p["age"])) for p in people_data]
 
-    # 1ª passagem — cria todas as instâncias e as registra no dicionário Person.people
-    for data in people_data:
-        name = str(data["name"])
-        age = int(data["age"])
-        person = Person(name, age)
-        persons.append(person)
-
-    # 2ª passagem — cria os relacionamentos (wife/husband)
     for data in people_data:
         person = Person.people[data["name"]]
 
-        # se tiver esposa
-        if "wife" in data and data["wife"] is not None:
-            wife_name = str(data["wife"])
-            if wife_name in Person.people:
-                person.wife = Person.people[wife_name]
+        wife_name = data.get("wife")
+        husband_name = data.get("husband")
 
-        # se tiver marido
-        if "husband" in data and data["husband"] is not None:
-            husband_name = str(data["husband"])
-            if husband_name in Person.people:
-                person.husband = Person.people[husband_name]
+        if wife_name:
+            person.wife = Person.people[wife_name]
+        if husband_name:
+            person.husband = Person.people[husband_name]
 
     return persons
+
